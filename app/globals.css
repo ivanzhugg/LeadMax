@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(238, 245, 255, 0.68) 48%, #ffffff 100%),
+    radial-gradient(circle at 50% -10%, rgba(139, 124, 246, 0.18), transparent 42%);
+  color: #111827;
+}
+
+::selection {
+  background: #38bdf8;
+  color: #ffffff;
+}
+
+a,
+button,
+summary,
+input,
+textarea {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(56, 189, 248, 0.35);
+  outline-offset: 3px;
+}
+
+@layer components {
+  .surface-card {
+    @apply rounded-lg border border-line/80 bg-white/[0.88] shadow-soft backdrop-blur;
+  }
+
+  .dark-surface {
+    @apply border border-white/10 bg-white/[0.06] shadow-glow backdrop-blur;
+  }
+
+  .eyebrow {
+    @apply text-sm font-semibold uppercase text-moss;
+  }
+
+  .primary-button {
+    @apply rounded-md bg-gradient-to-r from-moss to-leaf px-5 py-3 text-center text-sm font-semibold text-white shadow-glow hover:-translate-y-0.5 hover:shadow-soft;
+  }
+
+  .secondary-button {
+    @apply rounded-md border border-line bg-white/[0.85] px-5 py-3 text-center text-sm font-semibold text-ink hover:-translate-y-0.5 hover:border-moss hover:text-moss;
+  }
+
+  .dark-button {
+    @apply rounded-md border border-white/[0.18] bg-white/[0.08] px-5 py-3 text-center text-sm font-semibold text-white hover:-translate-y-0.5 hover:border-moss/70 hover:bg-white/[0.12];
+  }
+
+  .grid-backdrop {
+    background-image:
+      linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 124, 246, 0.08) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+}
