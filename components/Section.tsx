@@ -25,15 +25,15 @@ export function Section({
   const isDark = tone === "dark";
 
   return (
-    <section id={id} className={cn("relative overflow-hidden py-16 md:py-24", className)}>
-      <div className={cn("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", contentClassName)}>
+    <section id={id} className={cn("border-b border-line/70 py-10 md:py-14", className)}>
+      <div className={cn("mx-auto max-w-5xl px-4 sm:px-6 lg:px-8", contentClassName)}>
         {(eyebrow || title || intro) && (
-          <div className="mb-10 max-w-3xl">
+          <div className="mb-7 max-w-3xl">
             {eyebrow && (
               <p className="eyebrow mb-3">{eyebrow}</p>
             )}
             {title && (
-              <h2 className={cn("text-3xl font-bold leading-[1.08] md:text-5xl", isDark ? "text-white" : "text-ink")}>
+              <h2 className={cn("text-2xl font-bold leading-tight md:text-4xl", isDark ? "text-white" : "text-ink")}>
                 {title}
               </h2>
             )}

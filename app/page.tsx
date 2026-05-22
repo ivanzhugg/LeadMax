@@ -1,44 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BlogCard } from "@/components/BlogCard";
-import { CaseCard } from "@/components/CaseCard";
-import { ContactBlock } from "@/components/ContactBlock";
-import { CTA } from "@/components/CTA";
-import { FAQ } from "@/components/FAQ";
 import { Hero } from "@/components/Hero";
 import { JsonLd } from "@/components/JsonLd";
-import { ProcessSteps } from "@/components/ProcessSteps";
 import { Section } from "@/components/Section";
-import { ServiceCard } from "@/components/ServiceCard";
-import { Stats } from "@/components/Stats";
 import { blogPosts } from "@/data/blog";
 import { cases } from "@/data/cases";
-import { coreServices, crmServices, industryServices, scenarioServices, services } from "@/data/services";
-import { legalSupport } from "@/data/site";
+import { coreServices, crmServices, industryServices, scenarioServices } from "@/data/services";
 import { faqSchema } from "@/lib/schema";
 import { createPageMetadata } from "@/lib/seo";
 import type { FaqItem } from "@/types/content";
 
 const homeFaq: FaqItem[] = [
   {
-    question: "Вы делаете только frontend или самих ботов тоже?",
+    question: "Что делает LeadMax?",
     answer:
-      "В этом проекте сайт подготовлен как frontend. Как услуга для клиентов мы проектируем и внедряем ботов, сценарии, AI-ассистентов и интеграции с backend."
+      "LeadMax проектирует чат-ботов, AI-ассистентов и интеграции для MAX. Основные задачи: продажи, поддержка, запись клиентов, уведомления, CRM-интеграции и база знаний для ответов ассистента."
   },
   {
-    question: "Можно ли подключить существующий FastAPI backend?",
+    question: "С чего лучше начать внедрение?",
     answer:
-      "Да. Форма и архитектура сайта уже рассчитаны на server-side отправку данных в FastAPI endpoint через переменную окружения."
+      "Лучше начинать с одного измеримого сценария: квалификация заявки, запись клиента, статус заказа или FAQ поддержки. Такой MVP обычно запускается быстрее и дает данные для следующего этапа."
   },
   {
-    question: "С чего лучше начать автоматизацию в MAX?",
+    question: "Какие кейсы есть на сайте?",
     answer:
-      "С одного процесса, где много повторений и понятная метрика: входящие заявки, частые вопросы, запись или статус заказа."
-  },
-  {
-    question: "Нужен ли AI на первом этапе?",
-    answer:
-      "Не всегда. Часто выгоднее начать с надежных сценариев и CRM-интеграции, а AI добавить после анализа реальных диалогов."
+      "На сайте есть кейсы по квалификации заявок, маршрутизации поддержки, записи на консультацию, AI-ассистенту по базе знаний, статусам заказов интернет-магазина и записи пациентов клиники."
   }
 ];
 
@@ -49,239 +35,106 @@ export const metadata: Metadata = createPageMetadata({
   path: "/"
 });
 
+function serviceParagraph(services: typeof coreServices) {
+  return services
+    .map((service) => `${service.title}: ${service.lead}`)
+    .join(" ");
+}
+
 export default function HomePage() {
-  const featuredServices = services.slice(0, 6);
-  const featuredIndustryServices = industryServices.slice(0, 4);
-  const featuredIntegrationServices = [...crmServices, ...scenarioServices].slice(0, 4);
-  const featuredCases = cases.slice(0, 3);
-  const featuredPosts = blogPosts.slice(0, 3);
+  const crmAndScenarioServices = [...crmServices, ...scenarioServices];
 
   return (
     <>
       <JsonLd data={faqSchema(homeFaq)} />
       <Hero
-        kicker="LeadMax для продаж, поддержки и сервиса"
-        title="Чат-боты, AI и автоматизация в MAX для сильных бизнес-процессов"
-        lead="Проектируем сценарии, интеграции с CRM, AI-ассистентов и обработку заявок в MAX так, чтобы команда быстрее отвечала клиентам, не теряла лиды и видела результат в цифрах."
+        kicker="LeadMax для MAX"
+        title="Чат-боты, AI-ассистенты и CRM-интеграции в MAX"
+        lead="LeadMax помогает компаниям запускать рабочие сценарии в MAX: принимать заявки, отвечать клиентам, передавать данные в CRM, подключать базу знаний и снижать нагрузку на менеджеров."
         image="/images/hero-home.png"
-        primaryLabel="Обсудить задачу"
-        primaryHref="/contacts"
-        secondaryLabel="Смотреть услуги"
+        primaryLabel="Смотреть кейсы"
+        primaryHref="/cases"
+        secondaryLabel="Основная услуга"
         secondaryHref="/chat-boty-v-max"
       />
 
-      <Section className="bg-paper" contentClassName="-mt-10 relative z-10">
-        <Stats
-          items={[
-            { value: "1-2 недели", label: "на запуск MVP-сценария без сложной AI-логики" },
-            { value: "CRM + MAX", label: "единая воронка вместо ручного переноса заявок" },
-            { value: "SLA", label: "регламент поддержки и реакции после запуска" },
-            { value: "HTML", label: "индексируемый контент для Яндекса и Google" }
-          ]}
-        />
-      </Section>
-
-      <Section
-        eyebrow="Преимущества LeadMax"
-        title="Строим не бота ради бота, а управляемую систему коммуникаций"
-        intro="В основе каждого проекта - процесс, данные, интеграции и метрики. Такой подход помогает MAX стать рабочим каналом продаж, поддержки и сервиса."
-      >
-        <div className="grid gap-5 md:grid-cols-3">
-          {[
-            ["Процесс до интерфейса", "Сначала описываем путь клиента и данные, которые нужны бизнесу. Потом проектируем сценарии."],
-            ["Интеграции с учетом сбоев", "Закладываем повторные отправки, журнал событий и понятные ошибки, чтобы заявки не исчезали."],
-            ["AI под контролем", "Ассистент отвечает в заданных рамках, использует базу знаний и передает сложные ситуации человеку."]
-          ].map(([title, text]) => (
-            <div key={title} className="surface-card p-6">
-              <div className="mb-5 h-px w-16 bg-gradient-to-r from-moss to-leaf" />
-              <h3 className="text-xl font-bold text-ink">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-muted">{text}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        className="bg-mist"
-        eyebrow="Что автоматизируем"
-        title="Сценарии в MAX для продаж, поддержки и внутренних процессов"
-      >
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            "Квалификация лидов и передача заявок в CRM",
-            "FAQ, база знаний и передача оператору",
-            "Запись на консультации, визиты и сервисные работы",
-            "Уведомления о статусах, оплате и документах",
-            "AI-помощник для оператора и клиента",
-            "Маршрутизация обращений по отделам",
-            "Контроль дублей, тегов и обязательных полей",
-            "Аналитика по источникам, конверсии и SLA"
-          ].map((item) => (
-            <div key={item} className="surface-card p-5 text-sm font-semibold leading-6 text-ink">
-              {item}
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        className="bg-deep text-white"
-        tone="dark"
-        eyebrow="CRM + AI"
-        title="Интеграции, которые превращают диалог в управляемую воронку"
-        intro="LeadMax связывает MAX, CRM, AI-ассистента, уведомления и аналитику в единый поток обработки обращений."
-      >
-        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="dark-surface rounded-lg p-6">
-            <div className="grid gap-4 md:grid-cols-4">
-              {[
-                ["MAX", "Сообщения, заявки, статусы"],
-                ["AI", "Ответы, резюме, квалификация"],
-                ["CRM", "Лиды, сделки, задачи"],
-                ["BI", "Конверсии, SLA, источники"]
-              ].map(([title, text], index) => (
-                <div key={title} className="relative rounded-lg border border-white/10 bg-white/[0.06] p-5">
-                  {index < 3 && <span className="absolute right-[-18px] top-1/2 hidden h-px w-8 bg-moss/50 md:block" />}
-                  <span className="text-sm font-bold text-moss">{title}</span>
-                  <p className="mt-3 text-sm leading-6 text-white/70">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="grid gap-4">
-            {[
-              "Контроль дублей и обязательных полей перед созданием лида",
-              "Fallback-сценарии, если AI не уверен или API временно недоступен",
-              "Уведомления менеджеру по приоритету, срокам и статусам",
-              "События аналитики для оценки канала MAX"
-            ].map((item) => (
-              <div key={item} className="rounded-lg border border-white/10 bg-white/[0.06] p-5 text-sm leading-6 text-white/75">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      <Section
-        id="services"
-        eyebrow="Услуги"
-        title="Отдельные посадочные страницы под разные интенты"
-        intro="Так поисковик видит не один общий лендинг, а конкретные страницы под коммерческие запросы."
-      >
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {(coreServices.length > 0 ? coreServices.slice(0, 6) : featuredServices).map((service) => (
-            <ServiceCard key={service.slug} service={service} />
-          ))}
-        </div>
-        <Link href="/chat-bot-pod-klyuch-v-max" className="mt-8 inline-flex rounded-md border border-moss px-5 py-3 text-sm font-semibold text-moss hover:bg-moss hover:text-white">
-          Смотреть формат под ключ
-        </Link>
-      </Section>
-
-      {featuredIndustryServices.length > 0 && (
+      <article>
         <Section
-          className="bg-paper"
-          eyebrow="Отраслевые решения"
-          title="Посадочные страницы под ниши и длинные коммерческие запросы"
-          intro="Эти страницы можно быстро расширять в JSON: добавлять отрасли, сценарии, FAQ, кейсы и перелинковку без правки шаблонов."
+          eyebrow="Кратко"
+          title="Что делает LeadMax"
+          intro="Мы берем один понятный бизнес-процесс, описываем сценарий, собираем интеграции и доводим запуск до измеримого результата."
         >
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {featuredIndustryServices.map((service) => (
-              <ServiceCard key={service.slug} service={service} />
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              LeadMax внедряет чат-ботов в MAX для продаж, поддержки, записи клиентов и уведомлений. Бот собирает обязательные данные, передает заявки в CRM, отвечает на типовые вопросы и переводит сложные ситуации сотруднику с сохраненным контекстом.
+            </p>
+            <p>
+              AI-ассистент LeadMax работает как слой над базой знаний: он ищет релевантные материалы, отвечает кратко по найденному контексту и не должен выдумывать факты. Если информации на сайте нет, ассистент должен честно сказать, что точного ответа нет.
+            </p>
+          </div>
+        </Section>
+
+        <Section className="bg-paper" eyebrow="Услуги" title="Основные услуги">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>{serviceParagraph(coreServices.slice(0, 8))}</p>
+            <p>
+              Отраслевые услуги: {serviceParagraph(industryServices)} Интеграционные и сценарные услуги: {serviceParagraph(crmAndScenarioServices)}
+            </p>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {coreServices.slice(0, 8).map((service) => (
+              <Link key={service.slug} href={`/${service.slug}`} className="secondary-button">
+                {service.title}
+              </Link>
             ))}
           </div>
         </Section>
-      )}
 
-      {featuredIntegrationServices.length > 0 && (
-        <Section
-          eyebrow="CRM и сценарии"
-          title="Страницы под интеграции, запись, уведомления и отдельные процессы"
-          intro="Для SEO-роста удобно добавлять отдельные страницы под Битрикс24, amoCRM, запись клиентов, уведомления и другие точные интенты."
-        >
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {featuredIntegrationServices.map((service) => (
-              <ServiceCard key={service.slug} service={service} />
+        <Section eyebrow="Кейсы" title="Какие кейсы можно найти на сайте">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {cases.map((caseItem) => (
+              <p key={caseItem.slug}>
+                <strong>{caseItem.title}.</strong> {caseItem.summary} Задача: {caseItem.task} Подробнее: <Link href={`/cases/${caseItem.slug}`}>{caseItem.title}</Link>.
+              </p>
             ))}
           </div>
         </Section>
-      )}
 
-      <Section
-        className="bg-paper"
-        eyebrow="Кейсы"
-        title="Примеры сценариев, которые можно адаптировать под вашу нишу"
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          {featuredCases.map((caseItem) => (
-            <CaseCard key={caseItem.slug} caseItem={caseItem} />
-          ))}
-        </div>
-      </Section>
+        <Section className="bg-paper" eyebrow="Цены и сроки" title="Ориентиры бюджета">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              MVP чат-бота в MAX обычно стоит от 75 000 до 240 000 рублей в зависимости от сценария. Рабочая версия с CRM, обработкой ошибок и документацией обычно попадает в диапазон от 150 000 до 520 000 рублей. Сложный контур с AI, базой знаний, SLA и аналитикой может стоить от 300 000 до 950 000 рублей.
+            </p>
+            <p>
+              Срок MVP обычно составляет от 5 до 20 рабочих дней. Интеграции с CRM, helpdesk, календарем, CMS или базой знаний занимают от 3 до 10 недель, потому что требуют тестового контура, правил дублей, журнала ошибок и приемки на реальных диалогах.
+            </p>
+          </div>
+        </Section>
 
-      <Section
-        eyebrow="Внедрение"
-        title="Как проходит запуск"
-        intro="Двигаемся короткими этапами, чтобы быстро получить рабочий сценарий и не потерять контроль над интеграциями."
-      >
-        <ProcessSteps
-          steps={[
-            {
-              title: "Аудит",
-              text: "Разбираем входящие обращения, CRM, частые вопросы и точки ручной работы."
-            },
-            {
-              title: "Проектирование",
-              text: "Готовим карту диалогов, роли, данные, статусы, fallback и события аналитики."
-            },
-            {
-              title: "Разработка",
-              text: "Подключаем MAX, FastAPI backend, CRM, уведомления и тестовый контур."
-            },
-            {
-              title: "Запуск",
-              text: "Проверяем реальные сценарии, документируем систему и улучшаем по данным."
-            }
-          ]}
-        />
-      </Section>
+        <Section eyebrow="Статьи" title="Практические материалы">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              В блоге собраны практические материалы про безопасный переход в MAX, отличие бота от обычного чата, использование MAX в продажах, CRM-интеграции и AI-ассистентов. Каждая статья помогает принять решение по внедрению, оценить ограничения и подготовить требования к проекту.
+            </p>
+            <p>
+              {blogPosts.map((post) => `${post.title}: ${post.excerpt}`).join(" ")}
+            </p>
+          </div>
+          <Link href="/blog" className="secondary-button mt-6 inline-flex">
+            Все статьи
+          </Link>
+        </Section>
 
-      <Section className="bg-deep text-white" tone="dark" eyebrow="Правовой контур" title={legalSupport.title} intro={legalSupport.text}>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {legalSupport.items.map((item) => (
-            <div key={item} className="rounded-lg border border-white/10 bg-white/[0.06] p-5 text-sm leading-6 text-white/75">
-              {item}
-            </div>
-          ))}
-        </div>
-        <Link href="/blog/bezopasnyy-perehod-v-max-yuridicheskoe-soprovozhdenie" className="mt-8 inline-flex rounded-md border border-white/20 px-5 py-3 text-sm font-semibold text-white hover:border-moss hover:text-moss">
-          Подробнее о безопасном переходе
-        </Link>
-      </Section>
-
-      <Section className="bg-mist" eyebrow="Блог" title="Материалы для роста органического трафика">
-        <div className="grid gap-5 lg:grid-cols-3">
-          {featuredPosts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
-          ))}
-        </div>
-      </Section>
-
-      <Section eyebrow="FAQ" title="Частые вопросы">
-        <FAQ items={homeFaq} />
-      </Section>
-
-      <CTA
-        title="Начнем с процесса, где автоматизация окупится быстрее"
-        text="Опишите текущий поток обращений в MAX или план запуска. Подскажем, какой сценарий лучше сделать первым."
-        primaryLabel="Оставить заявку"
-        primaryHref="/contacts"
-        secondaryLabel="Изучить кейсы"
-        secondaryHref="/cases"
-      />
-
-      <ContactBlock page="home" />
+        <Section className="bg-paper" eyebrow="FAQ" title="Частые вопросы">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {homeFaq.map((item) => (
+              <p key={item.question}>
+                <strong>{item.question}</strong> {item.answer}
+              </p>
+            ))}
+          </div>
+        </Section>
+      </article>
     </>
   );
 }

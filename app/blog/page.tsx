@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { BlogCard } from "@/components/BlogCard";
+import Link from "next/link";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ContactBlock } from "@/components/ContactBlock";
 import { JsonLd } from "@/components/JsonLd";
 import { Section } from "@/components/Section";
 import { blogPosts } from "@/data/blog";
@@ -25,18 +24,21 @@ export default function BlogPage() {
     <>
       <JsonLd data={breadcrumbSchema(breadcrumbs)} />
       <Breadcrumbs items={breadcrumbs} />
-      <Section
-        eyebrow="Блог"
-        title="SEO-статьи про MAX, ботов и автоматизацию"
-        intro="Материалы закрывают информационные и полукоммерческие запросы, а также ведут читателя к релевантным услугам."
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          {blogPosts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
-          ))}
-        </div>
-      </Section>
-      <ContactBlock title="Нужна автоматизация после изучения материалов?" page="blog" />
+      <article>
+        <Section
+          eyebrow="Блог"
+          title="Практические материалы"
+          intro="Пишем о внедрении MAX без абстрактных обещаний: сценарии, ограничения, интеграции, юридические нюансы, стоимость и контроль качества."
+        >
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {blogPosts.map((post) => (
+              <p key={post.slug}>
+                <strong>{post.title}.</strong> {post.excerpt} В материале {post.sections.length} разделов с практическими деталями. Читать: <Link href={`/blog/${post.slug}`}>{post.title}</Link>.
+              </p>
+            ))}
+          </div>
+        </Section>
+      </article>
     </>
   );
 }

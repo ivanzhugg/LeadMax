@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BlogCard } from "@/components/BlogCard";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ContactBlock } from "@/components/ContactBlock";
-import { CTA } from "@/components/CTA";
 import { JsonLd } from "@/components/JsonLd";
-import { RelatedLinks } from "@/components/RelatedLinks";
 import { Section } from "@/components/Section";
 import { blogPosts, getBlogPostBySlug, getRelatedPosts } from "@/data/blog";
 import { getRelatedServices } from "@/data/services";
@@ -64,81 +60,58 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <article>
         <Section className="bg-paper" eyebrow="Статья" title={post.title} intro={post.excerpt}>
-          <div className="flex flex-wrap gap-3 text-sm text-muted">
-            <time dateTime={post.updatedAt}>Обновлено: {formatDate(post.updatedAt)}</time>
-            <span>{post.readingTime}</span>
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              Материал обновлен {formatDate(post.updatedAt)}. Время чтения: {post.readingTime}. В статье собраны практические правила, ограничения и примеры, которые помогают подготовить внедрение MAX без лишних итераций.
+            </p>
           </div>
         </Section>
 
         <Section>
-          <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
-            <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="surface-card p-5">
-                <h2 className="text-base font-bold text-ink">Оглавление</h2>
-                <ol className="mt-4 grid gap-3 text-sm text-muted">
-                  {post.sections.map((section) => (
-                    <li key={section.id}>
-                      <a href={`#${section.id}`} className="hover:text-moss">
-                        {section.title}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </aside>
-
-            <div className="prose prose-lg max-w-none prose-headings:text-ink prose-p:text-muted prose-li:text-muted">
-              {post.sections.map((section) => (
-                <section key={section.id} id={section.id} className="scroll-mt-28">
-                  <h2>{section.title}</h2>
-                  {section.body.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                  {section.bullets && (
-                    <ul>
-                      {section.bullets.map((bullet) => (
-                        <li key={bullet}>{bullet}</li>
-                      ))}
-                    </ul>
-                  )}
-                </section>
-              ))}
-            </div>
+          <div className="prose prose-lg max-w-none prose-headings:text-ink prose-p:text-muted prose-li:text-muted">
+            {post.sections.map((section) => (
+              <section key={section.id} id={section.id} className="scroll-mt-28">
+                <h2>{section.title}</h2>
+                {section.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+                {section.bullets && section.bullets.length > 0 && (
+                  <p>
+                    <strong>Ключевые пункты.</strong> {section.bullets.join(" ")}
+                  </p>
+                )}
+              </section>
+            ))}
           </div>
         </Section>
 
-        <Section className="bg-mist">
-          <RelatedLinks
-            title="Услуги по теме"
-            items={relatedServices.map((service) => ({
-              label: service.title,
-              href: `/${service.slug}`,
-              description: service.metaDescription
-            }))}
-          />
-        </Section>
-
-        {relatedPosts.length > 0 && (
-          <Section title="Похожие статьи">
-            <div className="grid gap-5 lg:grid-cols-2">
-              {relatedPosts.map((relatedPost) => (
-                <BlogCard key={relatedPost.slug} post={relatedPost} />
-              ))}
-            </div>
-            <Link href="/blog" className="mt-8 inline-flex text-sm font-semibold text-moss">
+        <Section className="bg-paper" title="Связанные услуги и статьи">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {relatedServices.length > 0 && (
+              <p>
+                <strong>Услуги по теме.</strong>{" "}
+                {relatedServices.map((service) => `${service.title}: ${service.metaDescription}`).join(" ")}
+              </p>
+            )}
+            {relatedPosts.length > 0 && (
+              <p>
+                <strong>Похожие статьи.</strong>{" "}
+                {relatedPosts.map((relatedPost) => `${relatedPost.title}: ${relatedPost.excerpt}`).join(" ")}
+              </p>
+            )}
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {relatedServices.map((service) => (
+              <Link key={service.slug} href={`/${service.slug}`} className="secondary-button">
+                {service.title}
+              </Link>
+            ))}
+            <Link href="/blog" className="secondary-button">
               Все статьи
             </Link>
-          </Section>
-        )}
+          </div>
+        </Section>
       </article>
-
-      <CTA
-        title="Переведем идеи из статьи в рабочий сценарий"
-        text="Опишите канал, CRM и типовые обращения. Подскажем, что лучше автоматизировать первым."
-        primaryHref="/contacts"
-        primaryLabel="Обсудить внедрение"
-      />
-      <ContactBlock title="Нужен бот или интеграция в MAX?" page={`blog:${post.slug}`} />
     </>
   );
 }

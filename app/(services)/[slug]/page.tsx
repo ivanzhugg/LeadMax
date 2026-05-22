@@ -2,19 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CaseCard } from "@/components/CaseCard";
-import { ContactBlock } from "@/components/ContactBlock";
-import { CTA } from "@/components/CTA";
-import { FAQ } from "@/components/FAQ";
 import { Hero } from "@/components/Hero";
 import { JsonLd } from "@/components/JsonLd";
-import { ProcessSteps } from "@/components/ProcessSteps";
-import { RelatedLinks } from "@/components/RelatedLinks";
 import { Section } from "@/components/Section";
 import { getCasesBySlugs } from "@/data/cases";
 import { getRelatedServices, getServiceBySlug, services } from "@/data/services";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
 import { createPageMetadata } from "@/lib/seo";
+import type { ContentListBlock, ProcessStep } from "@/types/content";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -42,6 +37,18 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     path: `/${service.slug}`,
     image: service.image || `/images/service-${service.slug}.png`
   });
+}
+
+function joinText(items: string[] = []) {
+  return items.join(" ");
+}
+
+function processText(steps: ProcessStep[] = []) {
+  return steps.map((step) => `${step.title}: ${step.text}`).join(" ");
+}
+
+function blockParagraph(block: ContentListBlock) {
+  return `${block.title}. ${block.text} ${joinText(block.items)}`;
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {
@@ -72,209 +79,149 @@ export default async function ServicePage({ params }: ServicePageProps) {
         image={heroImage}
         primaryLabel={service.primaryCta}
         primaryHref="/contacts"
-        secondaryLabel={service.secondaryCta}
-        secondaryHref="#details"
+        secondaryLabel="Кейсы"
+        secondaryHref="#cases"
       />
 
-      <Section id="details" eyebrow="Услуга" title="Что входит в работу">
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div className="prose prose-lg max-w-none prose-headings:text-ink prose-p:text-muted">
+      <article>
+        <Section id="details" eyebrow="Услуга" title="Описание услуги">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
             {service.intro.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
-            <h2>Кому подходит</h2>
-            <ul>
-              {service.audience.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <aside className="surface-card bg-mist/80 p-6">
-            <h2 className="text-xl font-bold text-ink">Коммерческий фокус</h2>
-            <p className="mt-3 text-sm leading-6 text-muted">
-              На старте фиксируем целевое действие, данные для CRM и метрики, по которым можно понять пользу автоматизации.
+            <p>
+              <strong>Кому подходит.</strong> {joinText(service.audience)}
             </p>
-            <Link href="/contacts" className="primary-button mt-5 inline-flex">
-              Получить оценку
-            </Link>
-          </aside>
-        </div>
-      </Section>
+            <p>
+              <strong>Какие задачи решает.</strong> {joinText(service.tasks)}
+            </p>
+            <p>
+              <strong>Что может быть в решении.</strong> {joinText(service.features)}
+            </p>
+          </div>
+        </Section>
 
-      <Section className="bg-mist" eyebrow="Бизнес-задачи" title="Какие задачи решает">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {service.tasks.map((task) => (
-            <div key={task} className="surface-card p-5 text-sm font-semibold leading-6 text-ink">
-              {task}
+        {service.ragBlocks && (
+          <Section className="bg-paper" eyebrow="Детали" title="Что важно учесть">
+            <div className="prose prose-lg max-w-none prose-p:text-muted">
+              {service.ragBlocks.map((block) => (
+                <section key={block.title}>
+                  <h3>{block.title}</h3>
+                  <p>{block.text}</p>
+                  <p>{joinText(block.items)}</p>
+                </section>
+              ))}
             </div>
-          ))}
-        </div>
-      </Section>
+          </Section>
+        )}
 
-      <Section eyebrow="Функциональность" title="Что может быть в решении">
-        <div className="grid gap-4 md:grid-cols-2">
-          {service.features.map((feature) => (
-            <div key={feature} className="surface-card p-5 text-muted">
-              {feature}
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section className="bg-paper" eyebrow="Этапы" title="Как внедряем">
-        <ProcessSteps steps={service.process} />
-      </Section>
-
-      {(service.pricing || service.timeline) && (
-        <Section eyebrow="Бюджет и сроки" title="Что влияет на оценку проекта">
-          <div className="grid gap-5 md:grid-cols-2">
+        <Section eyebrow="Стоимость" title="Цены, сроки и пакеты">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
             {service.pricing && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">{service.pricing.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted">{service.pricing.text}</p>
-                <ul className="mt-5 grid gap-3 text-sm text-muted">
-                  {service.pricing.items.map((item) => (
-                    <li key={item} className="rounded-md bg-mist px-4 py-3">{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>{service.pricing.title}.</strong> {service.pricing.text} {joinText(service.pricing.items)}
+              </p>
             )}
             {service.timeline && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">{service.timeline.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted">{service.timeline.text}</p>
-                <ul className="mt-5 grid gap-3 text-sm text-muted">
-                  {service.timeline.items.map((item) => (
-                    <li key={item} className="rounded-md bg-mist px-4 py-3">{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>{service.timeline.title}.</strong> {service.timeline.text} {joinText(service.timeline.items)}
+              </p>
             )}
+            {service.packages?.map((item) => (
+              <p key={item.title}>{blockParagraph(item)}</p>
+            ))}
           </div>
         </Section>
-      )}
 
-      {(service.deliverables || service.clientInputs) && (
-        <Section className="bg-mist" eyebrow="Состав работ" title="Что входит и что нужно от клиента">
-          <div className="grid gap-5 md:grid-cols-2">
+        <Section className="bg-paper" eyebrow="Внедрение" title="Как проходит работа">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              <strong>Этапы.</strong> {processText(service.process)}
+            </p>
             {service.deliverables && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">Что входит</h3>
-                <ul className="mt-5 grid gap-3 text-sm leading-6 text-muted">
-                  {service.deliverables.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>Что входит.</strong> {joinText(service.deliverables)}
+              </p>
             )}
             {service.clientInputs && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">Что понадобится от вашей команды</h3>
-                <ul className="mt-5 grid gap-3 text-sm leading-6 text-muted">
-                  {service.clientInputs.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>Что понадобится от клиента.</strong> {joinText(service.clientInputs)}
+              </p>
             )}
+            <p>
+              <strong>Примеры сценариев.</strong> {joinText(service.examples)}
+            </p>
           </div>
         </Section>
-      )}
 
-      {(service.risks || service.supportOptions || service.guarantees) && (
-        <Section eyebrow="Надежность" title="Риски, поддержка и SLA">
-          <div className="grid gap-5 lg:grid-cols-3">
+        <Section eyebrow="Надежность" title="Риски, поддержка и приемка">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
             {service.risks && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">Риски и ограничения</h3>
-                <ul className="mt-5 grid gap-3 text-sm leading-6 text-muted">
-                  {service.risks.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>Риски и ограничения.</strong> {joinText(service.risks)}
+              </p>
             )}
             {service.supportOptions && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">Форматы поддержки</h3>
-                <ul className="mt-5 grid gap-3 text-sm leading-6 text-muted">
-                  {service.supportOptions.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>Поддержка.</strong> {joinText(service.supportOptions)}
+              </p>
             )}
             {service.guarantees && (
-              <div className="surface-card p-6">
-                <h3 className="text-xl font-bold text-ink">Гарантии процесса</h3>
-                <ul className="mt-5 grid gap-3 text-sm leading-6 text-muted">
-                  {service.guarantees.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <p>
+                <strong>Гарантии процесса.</strong> {joinText(service.guarantees)}
+              </p>
+            )}
+            {service.commercialNotes && (
+              <p>
+                <strong>Коммерческие условия.</strong> {joinText(service.commercialNotes)}
+              </p>
             )}
           </div>
         </Section>
-      )}
 
-      {service.legalSupport && (
-        <Section className="bg-deep text-white" tone="dark" eyebrow="Юридическое сопровождение" title={service.legalSupport.title} intro={service.legalSupport.text}>
-          <div className="grid gap-4 md:grid-cols-2">
-            {service.legalSupport.items.map((item) => (
-              <div key={item} className="rounded-lg border border-white/10 bg-white/[0.06] p-5 text-sm leading-6 text-white/75">
-                {item}
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      <Section eyebrow="Примеры" title="Сценарии для запуска">
-        <div className="grid gap-4 md:grid-cols-3">
-          {service.examples.map((example) => (
-            <div key={example} className="surface-card p-6 text-sm leading-6 text-muted">
-              {example}
+        {service.legalSupport && (
+          <Section className="bg-paper" eyebrow="Юридический контур" title={service.legalSupport.title}>
+            <div className="prose prose-lg max-w-none prose-p:text-muted">
+              <p>{service.legalSupport.text}</p>
+              <p>{joinText(service.legalSupport.items)}</p>
             </div>
-          ))}
-        </div>
-      </Section>
+          </Section>
+        )}
 
-      {relatedCases.length > 0 && (
-        <Section className="bg-mist" eyebrow="Кейсы" title="Связанные примеры">
-          <div className="grid gap-5 lg:grid-cols-3">
-            {relatedCases.map((caseItem) => (
-              <CaseCard key={caseItem.slug} caseItem={caseItem} />
+        {relatedCases.length > 0 && (
+          <Section id="cases" eyebrow="Кейсы" title="Связанные кейсы">
+            <div className="prose prose-lg max-w-none prose-p:text-muted">
+              {relatedCases.map((caseItem) => (
+                <p key={caseItem.slug}>
+                  <strong>{caseItem.title}.</strong> {caseItem.summary} Задача: {caseItem.task} Подробнее: <Link href={`/cases/${caseItem.slug}`}>{caseItem.title}</Link>.
+                </p>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        <Section className="bg-paper" eyebrow="FAQ" title="Ответы на вопросы">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {service.faq.map((item) => (
+              <p key={item.question}>
+                <strong>{item.question}</strong> {item.answer}
+              </p>
             ))}
           </div>
         </Section>
-      )}
 
-      <Section eyebrow="FAQ" title="Ответы на вопросы">
-        <FAQ items={service.faq} />
-      </Section>
-
-      <Section className="bg-paper">
-        <RelatedLinks
-          title="Соседние услуги"
-          items={relatedServices.map((item) => ({
-            label: item.title,
-            href: `/${item.slug}`,
-            description: item.metaDescription
-          }))}
-        />
-      </Section>
-
-      <CTA
-        title="Получите план внедрения под ваш процесс"
-        text="Опишите, какие обращения идут в MAX и куда должны попадать данные. Подскажем состав MVP и риски интеграции."
-        primaryLabel={service.primaryCta}
-        primaryHref="/contacts"
-        secondaryLabel="Кейсы"
-        secondaryHref="/cases"
-      />
-
-      <ContactBlock title={`Обсудить: ${service.title}`} page={`service:${service.slug}`} />
+        {relatedServices.length > 0 && (
+          <Section eyebrow="Соседние услуги" title="Что посмотреть дальше">
+            <div className="flex flex-wrap gap-3">
+              {relatedServices.map((item) => (
+                <Link key={item.slug} href={`/${item.slug}`} className="secondary-button">
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
+      </article>
     </>
   );
 }

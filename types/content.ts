@@ -22,6 +22,12 @@ export type ContentListBlock = {
 
 export type LegalSupportBlock = ContentListBlock;
 
+export type MetricItem = {
+  label: string;
+  value: string;
+  text: string;
+};
+
 export type ServicePage = {
   category?: "core" | "industry" | "crm" | "scenario" | "custom";
   image?: string;
@@ -44,6 +50,7 @@ export type ServicePage = {
   primaryCta: string;
   secondaryCta: string;
   pricing?: ContentListBlock;
+  packages?: ContentListBlock[];
   timeline?: ContentListBlock;
   deliverables?: string[];
   clientInputs?: string[];
@@ -51,6 +58,7 @@ export type ServicePage = {
   supportOptions?: string[];
   guarantees?: string[];
   commercialNotes?: string[];
+  ragBlocks?: ContentListBlock[];
   legalSupport?: LegalSupportBlock;
 };
 
@@ -64,6 +72,14 @@ export type CaseItem = {
   solution: string[];
   stack: string[];
   result: string[];
+  clientProfile?: string;
+  baseline?: string;
+  implementation?: string[];
+  metrics?: MetricItem[];
+  timeline?: string;
+  budget?: string;
+  constraints?: string[];
+  assistantQuestions?: FaqItem[];
   serviceSlugs: string[];
   summary: string;
   updatedAt: string;

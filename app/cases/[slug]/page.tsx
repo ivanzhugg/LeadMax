@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ContactBlock } from "@/components/ContactBlock";
-import { CTA } from "@/components/CTA";
 import { JsonLd } from "@/components/JsonLd";
-import { RelatedLinks } from "@/components/RelatedLinks";
 import { Section } from "@/components/Section";
 import { cases, getCaseBySlug } from "@/data/cases";
 import { getRelatedServices } from "@/data/services";
@@ -39,6 +36,10 @@ export async function generateMetadata({ params }: CasePageProps): Promise<Metad
   });
 }
 
+function joinText(items: string[] = []) {
+  return items.join(" ");
+}
+
 export default async function CasePage({ params }: CasePageProps) {
   const { slug } = await params;
   const caseItem = getCaseBySlug(slug);
@@ -61,80 +62,99 @@ export default async function CasePage({ params }: CasePageProps) {
           intro={caseItem.summary}
           className="bg-paper"
         >
-          <div className="grid gap-6 text-sm text-muted md:grid-cols-3">
-            <div className="surface-card p-5">
-              <span className="font-semibold text-ink">Обновлено</span>
-              <p className="mt-2">{formatDate(caseItem.updatedAt)}</p>
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              Кейс обновлен {formatDate(caseItem.updatedAt)}. Ниша проекта: {caseItem.industry}. Фокус кейса: MAX, интеграции, автоматизация процесса и измеримый результат.
+            </p>
+          </div>
+        </Section>
+
+        <Section title="Контекст и задача">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {caseItem.clientProfile && <p>{caseItem.clientProfile}</p>}
+            <p>{caseItem.task}</p>
+            {caseItem.baseline && <p>{caseItem.baseline}</p>}
+          </div>
+        </Section>
+
+        <Section className="bg-paper" title="Решение и реализация">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              <strong>Решение.</strong> {joinText(caseItem.solution)}
+            </p>
+            {caseItem.implementation && (
+              <p>
+                <strong>Как реализовали.</strong> {joinText(caseItem.implementation)}
+              </p>
+            )}
+            <p>
+              <strong>Стек и интеграции.</strong> {joinText(caseItem.stack)}
+            </p>
+          </div>
+        </Section>
+
+        {caseItem.metrics && (
+          <Section title="Метрики и результат">
+            <div className="prose prose-lg max-w-none prose-p:text-muted">
+              <p>
+                <strong>Метрики.</strong> {caseItem.metrics.map((metric) => `${metric.label}: ${metric.value}. ${metric.text}`).join(" ")}
+              </p>
+              <p>
+                <strong>Результат.</strong> {joinText(caseItem.result)}
+              </p>
             </div>
-            <div className="surface-card p-5">
-              <span className="font-semibold text-ink">Ниша</span>
-              <p className="mt-2">{caseItem.industry}</p>
+          </Section>
+        )}
+
+        {(caseItem.timeline || caseItem.budget || caseItem.constraints) && (
+          <Section className="bg-paper" title="Сроки, бюджет и ограничения">
+            <div className="prose prose-lg max-w-none prose-p:text-muted">
+              {caseItem.timeline && (
+                <p>
+                  <strong>Сроки.</strong> {caseItem.timeline}
+                </p>
+              )}
+              {caseItem.budget && (
+                <p>
+                  <strong>Бюджет.</strong> {caseItem.budget}
+                </p>
+              )}
+              {caseItem.constraints && (
+                <p>
+                  <strong>Ограничения.</strong> {joinText(caseItem.constraints)}
+                </p>
+              )}
             </div>
-            <div className="surface-card p-5">
-              <span className="font-semibold text-ink">Фокус</span>
-              <p className="mt-2">MAX, CRM, автоматизация процесса</p>
+          </Section>
+        )}
+
+        {caseItem.assistantQuestions && (
+          <Section title="Вопросы для AI-ассистента">
+            <div className="prose prose-lg max-w-none prose-p:text-muted">
+              {caseItem.assistantQuestions.map((item) => (
+                <p key={item.question}>
+                  <strong>{item.question}</strong> {item.answer}
+                </p>
+              ))}
             </div>
-          </div>
-        </Section>
+          </Section>
+        )}
 
-        <Section title="Задача">
-          <p className="max-w-3xl text-lg leading-8 text-muted">{caseItem.task}</p>
-        </Section>
-
-        <Section className="bg-mist" title="Решение">
-          <div className="grid gap-4 md:grid-cols-3">
-            {caseItem.solution.map((item) => (
-              <div key={item} className="surface-card p-6 text-sm leading-6 text-ink">
-                {item}
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        <Section title="Стек и интеграции">
-          <div className="flex flex-wrap gap-3">
-            {caseItem.stack.map((item) => (
-              <span key={item} className="rounded-md border border-moss/20 bg-moss/10 px-4 py-2 text-sm font-semibold text-moss">
-                {item}
-              </span>
-            ))}
-          </div>
-        </Section>
-
-        <Section className="bg-paper" title="Результат">
-          <ul className="grid gap-4 md:grid-cols-3">
-            {caseItem.result.map((item) => (
-              <li key={item} className="surface-card p-6 text-sm leading-6 text-muted">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        <Section>
-          <RelatedLinks
-            title="Связанные услуги"
-            items={relatedServices.map((service) => ({
-              label: service.title,
-              href: `/${service.slug}`,
-              description: service.metaDescription
-            }))}
-          />
-          <div className="mt-10">
-            <Link href="/cases" className="text-sm font-semibold text-moss">
-              Все кейсы
-            </Link>
-          </div>
-        </Section>
+        {relatedServices.length > 0 && (
+          <Section className="bg-paper" title="Связанные услуги">
+            <div className="flex flex-wrap gap-3">
+              {relatedServices.map((service) => (
+                <Link key={service.slug} href={`/${service.slug}`} className="secondary-button">
+                  {service.title}
+                </Link>
+              ))}
+              <Link href="/cases" className="secondary-button">
+                Все кейсы
+              </Link>
+            </div>
+          </Section>
+        )}
       </article>
-
-      <CTA
-        title="Хотите похожий сценарий в MAX?"
-        text="Разберем текущий процесс и предложим MVP, который можно проверить на реальных обращениях."
-        primaryHref="/contacts"
-        primaryLabel="Обсудить кейс"
-      />
-      <ContactBlock title="Оценить автоматизацию по вашему процессу" page={`case:${caseItem.slug}`} />
     </>
   );
 }

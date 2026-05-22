@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ContactBlock } from "@/components/ContactBlock";
 import { JsonLd } from "@/components/JsonLd";
 import { Section } from "@/components/Section";
-import { Stats } from "@/components/Stats";
 import { breadcrumbSchema } from "@/lib/schema";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -24,36 +22,24 @@ export default function AboutPage() {
     <>
       <JsonLd data={breadcrumbSchema(breadcrumbs)} />
       <Breadcrumbs items={breadcrumbs} />
-      <Section
-        eyebrow="О нас"
-        title="Проектируем автоматизацию в MAX вокруг бизнес-процесса"
-        intro="Мы соединяем продуктовый подход, backend-интеграции и аккуратный диалоговый UX, чтобы бот не был отдельной игрушкой, а работал внутри продаж, поддержки и сервиса."
-      >
-        <Stats
-          items={[
-            { value: "B2B", label: "фокус на понятных коммерческих процессах" },
-            { value: "API", label: "интеграции с CRM, helpdesk и внутренними системами" },
-            { value: "SEO", label: "архитектура сайта для органического роста" },
-            { value: "SLA", label: "сопровождение и контроль изменений после запуска" }
-          ]}
-        />
-      </Section>
-      <Section className="bg-mist" title="Принципы работы">
-        <div className="grid gap-5 md:grid-cols-3">
-          {[
-            ["Прозрачность", "Фиксируем сценарии, поля, события и ограничения до разработки."],
-            ["Надежность", "Планируем ошибки интеграций, fallback и контроль дублей заранее."],
-            ["Рост", "После MVP расширяем бота по данным реальных диалогов, а не по догадкам."]
-          ].map(([title, text]) => (
-            <div key={title} className="surface-card p-6">
-              <div className="mb-5 h-px w-16 bg-gradient-to-r from-moss to-leaf" />
-              <h2 className="text-xl font-bold text-ink">{title}</h2>
-              <p className="mt-3 text-sm leading-6 text-muted">{text}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-      <ContactBlock title="Расскажите о процессе, который хотите автоматизировать" page="about" />
+      <article>
+        <Section
+          eyebrow="О нас"
+          title="LeadMax проектирует автоматизацию в MAX вокруг бизнес-процесса"
+        >
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              LeadMax делает чат-ботов, AI-ассистентов и интеграции для MAX. Главный принцип работы: сначала описывается процесс, данные, ответственные роли и метрика результата, затем проектируется сценарий диалога и backend-интеграции.
+            </p>
+            <p>
+              Команда фокусируется на B2B-процессах, CRM, helpdesk, записи клиентов, уведомлениях и базах знаний. Проект считается готовым не после красивого интерфейса, а после тестовых диалогов, записи данных в нужную систему, обработки ошибок и передачи документации.
+            </p>
+            <p>
+              После MVP LeadMax рекомендует наблюдать реальные диалоги минимум две недели. По ним видно, какие вопросы повторяются, где пользователи бросают сценарий, какие ответы нужно добавить в базу знаний и какие интеграции требуют доработки.
+            </p>
+          </div>
+        </Section>
+      </article>
     </>
   );
 }

@@ -8,12 +8,12 @@ type ContactBlockProps = {
 
 export function ContactBlock({ title = "Обсудим задачу в MAX", page = "site" }: ContactBlockProps) {
   return (
-    <section className="relative overflow-hidden bg-paper py-16 md:py-24">
-      <div className="absolute inset-0 grid-backdrop opacity-35" />
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
+    <aside className="relative overflow-hidden bg-paper py-14 md:py-20">
+      <div className="absolute inset-0 grid-backdrop opacity-25" />
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
         <div className="relative">
           <p className="eyebrow">Контакты</p>
-          <h2 className="mt-3 text-3xl font-bold leading-[1.08] text-ink md:text-5xl">{title}</h2>
+          <h2 className="mt-3 text-3xl font-bold leading-tight text-ink md:text-5xl">{title}</h2>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
             Опишите процесс, который хотите автоматизировать. Вернемся с вопросами, оценкой сложности и ближайшим разумным шагом.
           </p>
@@ -38,6 +38,6 @@ export function ContactBlock({ title = "Обсудим задачу в MAX", pag
         </div>
         <LeadForm page={page} />
       </div>
-    </section>
+    </aside>
   );
 }

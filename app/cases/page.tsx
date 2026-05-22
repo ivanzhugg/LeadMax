@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CaseCard } from "@/components/CaseCard";
-import { ContactBlock } from "@/components/ContactBlock";
 import { JsonLd } from "@/components/JsonLd";
 import { Section } from "@/components/Section";
 import { cases } from "@/data/cases";
@@ -25,18 +24,21 @@ export default function CasesPage() {
     <>
       <JsonLd data={breadcrumbSchema(breadcrumbs)} />
       <Breadcrumbs items={breadcrumbs} />
-      <Section
-        eyebrow="Кейсы"
-        title="Практические сценарии автоматизации в MAX"
-        intro="Здесь собраны типовые примеры, которые можно адаптировать под отрасль, CRM, команду и текущие ограничения бизнеса."
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          {cases.map((caseItem) => (
-            <CaseCard key={caseItem.slug} caseItem={caseItem} />
-          ))}
-        </div>
-      </Section>
-      <ContactBlock title="Подберем сценарий под вашу нишу" page="cases" />
+      <article>
+        <Section
+          eyebrow="Кейсы"
+          title="Практические сценарии автоматизации в MAX"
+          intro="Здесь собраны проекты с понятной задачей, решением, стеком и результатом. По ним удобно оценить, какие сценарии подходят для продаж, поддержки, записи клиентов и внутренних процессов."
+        >
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            {cases.map((caseItem) => (
+              <p key={caseItem.slug}>
+                <strong>{caseItem.title}.</strong> Ниша: {caseItem.industry}. {caseItem.summary} Задача: {caseItem.task} Решение: {caseItem.solution.join(" ")} Результат: {caseItem.result.join(" ")} Подробнее: <Link href={`/cases/${caseItem.slug}`}>{caseItem.title}</Link>.
+              </p>
+            ))}
+          </div>
+        </Section>
+      </article>
     </>
   );
 }

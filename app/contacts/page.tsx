@@ -24,27 +24,22 @@ export default function ContactsPage() {
     <>
       <JsonLd data={breadcrumbSchema(breadcrumbs)} />
       <Breadcrumbs items={breadcrumbs} />
-      <ContactBlock title="Контакты и заявка на автоматизацию в MAX" page="contacts" />
-      <Section title="Реквизиты и условия работы" className="bg-mist">
-        <dl className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div className="surface-card p-5">
-            <dt className="font-semibold text-ink">Юрлицо</dt>
-            <dd className="mt-2 text-sm text-muted">{siteConfig.legalName}</dd>
+      <article>
+        <Section title="Контакты и условия работы">
+          <div className="prose prose-lg max-w-none prose-p:text-muted">
+            <p>
+              Для обсуждения проекта LeadMax принимает описание процесса, список систем для интеграции, примеры текущих обращений и желаемый результат. Контакт для связи: {siteConfig.email}, телефон: {siteConfig.phone}.
+            </p>
+            <p>
+              Юридическое лицо: {siteConfig.legalName}. Реквизиты: {siteConfig.inn}, {siteConfig.ogrn}. Адрес для корреспонденции: {siteConfig.address}. Условия работы: {siteConfig.workTerms}
+            </p>
+            <p>
+              Поддержка после запуска возможна по SLA. Регламент реакции, состав сопровождения и порядок обновления сценариев фиксируются в договоре или приложении к проекту.
+            </p>
           </div>
-          <div className="surface-card p-5">
-            <dt className="font-semibold text-ink">Реквизиты</dt>
-            <dd className="mt-2 text-sm text-muted">{siteConfig.inn}, {siteConfig.ogrn}</dd>
-          </div>
-          <div className="surface-card p-5">
-            <dt className="font-semibold text-ink">Адрес</dt>
-            <dd className="mt-2 text-sm text-muted">{siteConfig.address}</dd>
-          </div>
-          <div className="surface-card p-5">
-            <dt className="font-semibold text-ink">Условия</dt>
-            <dd className="mt-2 text-sm text-muted">{siteConfig.workTerms}</dd>
-          </div>
-        </dl>
-      </Section>
+        </Section>
+      </article>
+      <ContactBlock title="Описать задачу для автоматизации в MAX" page="contacts" />
     </>
   );
 }

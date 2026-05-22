@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
+import Script from "next/script";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -14,6 +15,18 @@ const manrope = Manrope({
   display: "swap",
   variable: "--font-manrope"
 });
+
+const widgetUrl =
+  process.env.NEXT_PUBLIC_AI_CHAT_WIDGET_URL || "http://localhost:8000/ai-chat-widget.js";
+const widgetBackendUrl =
+  process.env.NEXT_PUBLIC_AI_CHAT_BACKEND_URL || "http://localhost:8000";
+const widgetDesignId = process.env.NEXT_PUBLIC_AI_CHAT_DESIGN_ID || "1";
+const widgetAssistantName = process.env.NEXT_PUBLIC_AI_CHAT_ASSISTANT_NAME || "Ассистент LeadMax";
+const widgetWelcomeMessage =
+  process.env.NEXT_PUBLIC_AI_CHAT_WELCOME_MESSAGE ||
+  "Здравствуйте! Я AI-ассистент LeadMax. Могу кратко рассказать об услугах, кейсах, ценах и сроках.";
+const widgetInputPlaceholder =
+  process.env.NEXT_PUBLIC_AI_CHAT_INPUT_PLACEHOLDER || "Спросите про услуги или кейсы";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -76,6 +89,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Header />
         <main>{children}</main>
         <Footer />
+        <Script
+          src={widgetUrl}
+          strategy="afterInteractive"
+          data-backend-url={widgetBackendUrl}
+          data-design-id={widgetDesignId}
+          data-assistant-name={widgetAssistantName}
+          data-welcome-message={widgetWelcomeMessage}
+          data-input-placeholder={widgetInputPlaceholder}
+        />
       </body>
     </html>
   );

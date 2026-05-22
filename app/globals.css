@@ -12,13 +12,13 @@ html {
 
 body {
   background:
-    linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(238, 245, 255, 0.68) 48%, #ffffff 100%),
-    radial-gradient(circle at 50% -10%, rgba(139, 124, 246, 0.18), transparent 42%);
-  color: #111827;
+    radial-gradient(circle at top left, rgba(15, 139, 141, 0.1), transparent 32rem),
+    linear-gradient(180deg, #f7f9fc 0%, #ffffff 34%, #f7f9fc 100%);
+  color: #102033;
 }
 
 ::selection {
-  background: #38bdf8;
+  background: #0f8b8d;
   color: #ffffff;
 }
 
@@ -36,39 +36,49 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(56, 189, 248, 0.35);
+  outline: 3px solid rgba(15, 139, 141, 0.35);
   outline-offset: 3px;
 }
 
 @layer components {
   .surface-card {
-    @apply rounded-lg border border-line/80 bg-white/[0.88] shadow-soft backdrop-blur;
+    @apply rounded-2xl border border-line bg-white shadow-sm;
   }
 
   .dark-surface {
-    @apply border border-white/10 bg-white/[0.06] shadow-glow backdrop-blur;
+    @apply border border-white/10 bg-white/[0.06];
   }
 
   .eyebrow {
-    @apply text-sm font-semibold uppercase text-moss;
+    @apply text-sm font-bold uppercase tracking-[0.16em] text-moss;
   }
 
   .primary-button {
-    @apply rounded-md bg-gradient-to-r from-moss to-leaf px-5 py-3 text-center text-sm font-semibold text-white shadow-glow hover:-translate-y-0.5 hover:shadow-soft;
+    @apply rounded-xl bg-moss px-5 py-3 text-center text-sm font-semibold text-white shadow-sm hover:-translate-y-0.5 hover:bg-leaf;
   }
 
   .secondary-button {
-    @apply rounded-md border border-line bg-white/[0.85] px-5 py-3 text-center text-sm font-semibold text-ink hover:-translate-y-0.5 hover:border-moss hover:text-moss;
+    @apply rounded-xl border border-line bg-white px-5 py-3 text-center text-sm font-semibold text-ink shadow-sm hover:-translate-y-0.5 hover:border-moss hover:text-moss;
   }
 
   .dark-button {
-    @apply rounded-md border border-white/[0.18] bg-white/[0.08] px-5 py-3 text-center text-sm font-semibold text-white hover:-translate-y-0.5 hover:border-moss/70 hover:bg-white/[0.12];
+    @apply rounded-xl border border-white/[0.18] bg-white/[0.08] px-5 py-3 text-center text-sm font-semibold text-white hover:-translate-y-0.5 hover:border-moss/70 hover:bg-white/[0.12];
+  }
+
+  .hero-shell {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(237, 243, 248, 0.92)),
+      radial-gradient(circle at 85% 20%, rgba(15, 139, 141, 0.16), transparent 24rem);
+  }
+
+  .hero-panel {
+    box-shadow: 0 24px 70px rgba(11, 31, 51, 0.12);
   }
 
   .grid-backdrop {
     background-image:
-      linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(139, 124, 246, 0.08) 1px, transparent 1px);
+      linear-gradient(rgba(15, 139, 141, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 105, 170, 0.08) 1px, transparent 1px);
     background-size: 42px 42px;
   }
 }

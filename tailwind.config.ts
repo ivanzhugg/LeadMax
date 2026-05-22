@@ -11,16 +11,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#111827",
-        deep: "#0f172a",
-        muted: "#64748b",
-        line: "#d9e4f2",
-        paper: "#f8fbff",
-        mist: "#eef5ff",
-        moss: "#38bdf8",
-        leaf: "#8b7cf6",
-        coral: "#ef6a8a",
-        sun: "#bfdbfe"
+        ink: "#102033",
+        deep: "#0b1f33",
+        muted: "#5f6f82",
+        line: "#d7e0ea",
+        paper: "#f7f9fc",
+        mist: "#edf3f8",
+        moss: "#0f8b8d",
+        leaf: "#1769aa",
+        coral: "#d8664d",
+        sun: "#f2c94c"
       },
       boxShadow: {
         soft: "0 22px 70px rgba(15, 23, 42, 0.12)",
